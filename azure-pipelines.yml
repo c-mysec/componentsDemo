@@ -10,6 +10,8 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  dockerRegistryServiceConnection: emitDockerRegistryConnection
+  imageRepository: componentsdemo
 
 stages:
 - stage: Build
@@ -21,19 +23,6 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
 
-# Download secure file
-# Download a secure file to the agent machine
-#    - task: DownloadSecureFile@1
-#      name: mySecureFile # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
-#      inputs:
-#        secureFile: settings.xml # The file name or GUID of the secure file
-#    - script: |
-#        echo Coping $(mySecureFile.secureFilePath) to the ~/.m2 folder...
-#        sudo mkdir ~/.m2/
-#        sudo chmod 0777 ~/.m2/
-#        sudo cp $(mySecureFile.secureFilePath) ~/.m2/
-#        sudo chmod -R 0666 ~/.m2/*
-# Download an artifact with name 'com.test:testpackage' to $(System.ArtifactsDirectory)
     - task: Maven@3
       inputs:
         mavenPomFile: 'pom.xml'
@@ -45,10 +34,19 @@ stages:
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
         mavenFeedAuthenticate: true
         goals: 'package'
+
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: $(dockerRegistryServiceConnection)
     - task: Docker@2
       displayName: Build an image
       inputs:
-        command: build
+        command: buildAndPush
+        repository: $(imageRepository)
+#        dockerfile: $(dockerfilePath)
+#        containerRegistry: $(dockerRegistryServiceConnection)
         dockerfile: '**/Dockerfile'
         tags: |
           $(tag)
