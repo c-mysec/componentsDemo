@@ -6,6 +6,6 @@
 
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
-COPY ./target/*.jar compdemo.jar
+COPY ./target/compdemo-0.0.1-SNAPSHOT.jar compdemo.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-Dspring.profiles.active=dev","-jar","/compdemo.jar"]
