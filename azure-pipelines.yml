@@ -23,17 +23,41 @@ stages:
 
 # Download secure file
 # Download a secure file to the agent machine
-    - task: DownloadSecureFile@1
-      name: mySecureFile # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+#    - task: DownloadSecureFile@1
+#      name: mySecureFile # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+#      inputs:
+#        secureFile: settings.xml # The file name or GUID of the secure file
+#    - script: |
+#        echo Coping $(mySecureFile.secureFilePath) to the ~/.m2 folder...
+#        sudo mkdir ~/.m2/
+#        sudo chmod 0777 ~/.m2/
+#        sudo cp $(mySecureFile.secureFilePath) ~/.m2/
+#        sudo chmod -R 0666 ~/.m2/*
+# Download an artifact with name 'com.test:testpackage' to $(System.ArtifactsDirectory)
+    - task: DownloadPackage@1
       inputs:
-        secureFile: settings.xml # The file name or GUID of the secure file
-    - script: |
-        echo Coping $(mySecureFile.secureFilePath) to the ~/.m2 folder...
-        sudo mkdir ~/.m2/
-        sudo chmod 0777 ~/.m2/
-        sudo cp $(mySecureFile.secureFilePath) ~/.m2/
-        sudo chmod -R 0666 ~/.m2/*
-
+        packageType: 'maven'
+        feed: 'components' # <projectId>/<feedId>
+        definition: 'xom.components:rest-client-with-oauth2' 
+        version: '0.0.1' # Should be normalized version
+        files: '*.pom'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: DownloadPackage@1
+      inputs:
+        packageType: 'maven'
+        feed: 'components' # <projectId>/<feedId>
+        definition: 'xom.components:cloudFileAccessAzureImpl' 
+        version: '0.0.1' # Should be normalized version
+        files: '*.pom'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: DownloadPackage@1
+      inputs:
+        packageType: 'maven'
+        feed: 'components' # <projectId>/<feedId>
+        definition: 'xom.components:cloudFileAccessApi' 
+        version: '0.0.1' # Should be normalized version
+        files: '*.pom'
+        downloadPath: '$(System.ArtifactsDirectory)'
     - task: Maven@3
       inputs:
         mavenPomFile: 'pom.xml'
