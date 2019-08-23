@@ -20,6 +20,20 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
+
+# Download secure file
+# Download a secure file to the agent machine
+    - task: DownloadSecureFile@1
+      name: mySecureFile # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+      inputs:
+        secureFile: settings.xml # The file name or GUID of the secure file
+    - script: |
+        echo Coping $(mySecureFile.secureFilePath) to the ~/.m2 folder...
+        sudo mkdir ~/.m2/
+        sudo chmod 0777 ~/.m2/
+        sudo cp $(mySecureFile.secureFilePath) ~/.m2/
+        sudo chmod -R 0666 ~/.m2/*
+
     - task: Maven@3
       inputs:
         mavenPomFile: 'pom.xml'
