@@ -88,6 +88,11 @@
 			<artifactId>cloudFileAccessAzureImpl</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>xom.component</groupId>
+			<artifactId>cloudFileAccessAzureSpring</artifactId>
+			<version>0.0.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -155,6 +160,11 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<distributionManagement>
+		<!-- 
+		<repository>
+			<id>nexus-snapshots</id> <url>http://nexus:8081/repository/maven-hosted/</url> 
+		</repository>
+		 -->
 		<repository>
 			<id>dev-azure-com-dev-flcit-coit-components</id>
 			<url>https://pkgs.dev.azure.com/DEV-FLCIT-COIT/_packaging/components/maven/v1</url>
